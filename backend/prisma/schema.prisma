@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  phone     String    @unique
+  email     String?   @unique
+  type      UserType
+  orders    Order[]
+  products  Product[] @relation("SellerProducts")
+  password  String
+  address   String    @default("Unknown")
+  createdAt DateTime  @default(now())
+}
+
+enum UserType {
+  PERSONAL
+  BUSINESS
+  SELLER
+}
+
+model Order {
+  id            String        @id @default(uuid())
+  user          User          @relation(fields: [userId], references: [id])
+  userId        String
+  items         OrderItem[]
+  status        OrderStatus   @default(PENDING)
+  paymentstatus PaymentStatus @default(PENDING)
+  placedAt      DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  ONGOING
+  FULFILLED
+}
+
+enum PaymentStatus {
+  PENDING
+  FULFILLED
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  quantity  Int
+}
+
+model Product {
+  id          String      @id @default(uuid())
+  name        String
+  description String?
+  price       Float
+  unit        String // e.g., "KG", "PCS"
+  available   Boolean     @default(true)
+  sellerId    String
+  seller      User        @relation("SellerProducts", fields: [sellerId], references: [id])
+  OrderItem   OrderItem[]
+}
