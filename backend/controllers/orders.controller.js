@@ -43,7 +43,7 @@ export const handlePostOrders = async (req, res) => {
   }
 };
 
-export const handleAllGetOrders = async (req, res) => {
+export const handleGetAllOrders = async (req, res) => {
   try {
     const { userId } = req.query;
 

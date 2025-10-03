@@ -5,7 +5,7 @@ import crypto from "crypto";
 import {
   handleLogin,
   handleSignUp,
-  handleVerify,
+  // handleVerify,
 } from "../controllers/auth.controller.js";
 
 const router = express.Router();
@@ -18,6 +18,6 @@ router.post("/signup", handleSignUp);
 router.post("/login", handleLogin);
 
 // POST /auth/verify (OTP verification)
-router.post("/verify", handleVerify);
+// router.post("/verify", handleVerify);
 
 export default router;
