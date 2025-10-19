@@ -8,6 +8,14 @@ import sellerRoutes from "./routes/seller.routes.js"
 import cookieParser from "cookie-parser";
 import { authMiddleware } from "./middlewares/auth.middlewares.js";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 min
+  max: 100, // limit each IP
+});
+
+
 
 
 const app = express();
@@ -17,6 +25,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
+app.use(limiter);
 
 // test route
 app.get("/", (req, res) => {
