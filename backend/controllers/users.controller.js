@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 export const getUserProfile = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const userId  = req.user.id;
 
     if (!userId) {
       return res.status(400).json({ error: "userId is required" });
@@ -25,7 +25,8 @@ export const getUserProfile = async (req, res) => {
 
 export const updateUserProfile = async (req, res) => {
   try {
-    const { userId, name, phone, email, type, address } = req.body;
+    const userId = req.user.id;
+    const { name, phone, email, type, address } = req.body;
 
     if (!userId) {
       return res.status(400).json({ error: "userId is required" });

@@ -4,7 +4,8 @@ const prisma = new PrismaClient();
 
 export const postSellerItems = async (req, res) => {
   try {
-    const { sellerId, name, description, price, unit } = req.body;
+    const { name, description, price, unit } = req.body;
+    const sellerId = req.user.id;
 
     if (!sellerId || !name || !price || !unit) {
       return res
@@ -42,7 +43,22 @@ export const deleteSellerItems = async (req, res) => {
   try {
     const { itemId } = req.params;
 
-    const product = await prisma.product.delete({
+    // Find the product by itemId
+    const product = await prisma.product.findUnique({
+      where: { id: itemId },
+    });
+
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    // Check if the logged-in seller is the owner of the product
+    if (product.sellerId !== req.user.id) {
+      return res.status(403).json({ error: "You can only delete your own products" });
+    }
+
+    // Proceed with deletion if authorized
+    await prisma.product.delete({
       where: { id: itemId },
     });
 
@@ -55,7 +71,8 @@ export const deleteSellerItems = async (req, res) => {
 
 export const getSellerOrders = async (req, res) => {
   try {
-    const { sellerId, status } = req.query;
+    const { status } = req.query;
+    const sellerId = req.user.id;
 
     if (!sellerId) {
       return res.status(400).json({ error: "sellerId is required" });
@@ -88,19 +105,40 @@ export const getSellerOrders = async (req, res) => {
 
 export const patchSellerOrders = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { status } = req.body;
+    const { id } = req.params; // order ID
+    const { status } = req.body; // new status
 
     if (!status) {
       return res.status(400).json({ error: "status is required" });
     }
 
-    const order = await prisma.order.update({
+    // Find the order to check its associated products
+    const order = await prisma.order.findUnique({
+      where: { id },
+      include: {
+        items: {
+          include: { product: true },
+        },
+      },
+    });
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    // Check if the order contains products belonging to the logged-in seller
+    const isSellerOrder = order.items.some(item => item.product.sellerId === req.user.id);
+    if (!isSellerOrder) {
+      return res.status(403).json({ error: "You can only update orders related to your products" });
+    }
+
+    // Proceed with updating the order status
+    const updatedOrder = await prisma.order.update({
       where: { id },
       data: { status },
     });
 
-    res.json(order);
+    res.json(updatedOrder);
   } catch (err) {
     console.error("Error updating order:", err);
     res.status(500).json({ error: "Internal Server Error" });
@@ -109,11 +147,7 @@ export const patchSellerOrders = async (req, res) => {
 
 export const getSellerItems = async (req, res) => {
   try {
-    const { sellerId } = req.query;
-
-    if (!sellerId) {
-      return res.status(400).json({ error: "sellerId is required" });
-    }
+    const sellerId = req.user.id;
 
     const items = await prisma.product.findMany({
       where: { sellerId },

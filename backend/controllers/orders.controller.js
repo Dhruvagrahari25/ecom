@@ -4,7 +4,8 @@ const prisma = new PrismaClient();
 
 export const handlePostOrders = async (req, res) => {
   try {
-    const { userId, items } = req.body;
+    const { items } = req.body;
+    const userId = req.user.id;
 
     if (!userId || !items || items.length === 0) {
       return res.status(400).json({ error: "userId and items are required" });
@@ -45,7 +46,7 @@ export const handlePostOrders = async (req, res) => {
 
 export const handleGetAllOrders = async (req, res) => {
   try {
-    const { userId } = req.query;
+    const userId = req.user.id;
 
     if (!userId) {
       return res.status(400).json({ error: "userId is required" });
@@ -73,7 +74,7 @@ export const handleGetAllOrders = async (req, res) => {
 export const handleGetOrder = async (req, res) => {
   try {
     const { id } = req.params;
-    const { userId } = req.query; // for now, take userId from query
+    const userId = req.user.id;
 
     if (!userId) {
       return res.status(400).json({ error: "userId is required" });
@@ -109,7 +110,8 @@ export const handleGetOrder = async (req, res) => {
 export const handlePatchOrder = async (req, res) => {
   try {
     const { id } = req.params;
-    const { userId, items } = req.body;
+    const { items } = req.body;
+    const userId = req.user.id;
 
     if (!userId || !items || !Array.isArray(items)) {
       return res

@@ -6,6 +6,8 @@ import authRoutes from "./routes/auth.routes.js"
 import orderRoutes from "./routes/orders.routes.js";
 import sellerRoutes from "./routes/seller.routes.js"
 import cookieParser from "cookie-parser";
+import { authMiddleware } from "./middlewares/auth.middlewares.js";
+import cors from "cors";
 
 
 const app = express();
@@ -14,6 +16,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors());
 
 // test route
 app.get("/", (req, res) => {
