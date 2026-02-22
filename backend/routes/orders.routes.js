@@ -18,9 +18,9 @@ router.post("/", authMiddleware(["PERSONAL", "BUSINESS"]), handlePostOrders);
 router.get("/", authMiddleware(["PERSONAL", "BUSINESS"]), handleGetAllOrders);
 
 // GET /orders/:id – fetch single order details
-router.get("/:id", authMiddleware(["PERSONAL", "BUSINESS"]), handleGetOrder);
+router.get("/:id", authMiddleware(["PERSONAL", "BUSINESS", "SELLER"]), handleGetOrder);
 
 // PATCH /orders/:id – update order items (quantities only)
-router.patch("/:id", authMiddleware(["PERSONAL", "BUSINESS"]), handlePatchOrder);
+router.patch("/:id", authMiddleware(["PERSONAL", "BUSINESS", "SELLER"]), handlePatchOrder);
 
 export default router;

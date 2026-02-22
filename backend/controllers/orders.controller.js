@@ -26,10 +26,15 @@ export const handlePostOrders = async (req, res) => {
       data: {
         userId,
         items: {
-          create: items.map((i) => ({
-            productId: i.productId,
-            quantity: i.quantity,
-          })),
+          create: items.map((i) => {
+            const product = products.find((p) => p.id === i.productId);
+            return {
+              productId: i.productId,
+              quantity: i.quantity,
+              price: product.price,
+              cost: product.cost,
+            };
+          }),
         },
       },
       include: {
@@ -55,6 +60,12 @@ export const handleGetAllOrders = async (req, res) => {
     const orders = await prisma.order.findMany({
       where: { userId },
       include: {
+        user: {
+          select: {
+            name: true,
+            address: true,
+          }
+        },
         items: {
           include: {
             product: true, // fetch product details for each order item
@@ -83,6 +94,12 @@ export const handleGetOrder = async (req, res) => {
     const order = await prisma.order.findUnique({
       where: { id },
       include: {
+        user: {
+          select: {
+            name: true,
+            address: true,
+          }
+        },
         items: {
           include: { product: true },
         },
@@ -93,8 +110,22 @@ export const handleGetOrder = async (req, res) => {
       return res.status(404).json({ error: "Order not found" });
     }
 
-    // make sure the order belongs to the user
-    if (order.userId !== userId) {
+    // Check if the user is the buyer
+    let isAuthorized = order.userId === userId;
+
+    // If not the buyer, check if the user is a seller who owns any product in the order
+    if (!isAuthorized && req.user.type === "SELLER") {
+      const sellerProducts = await prisma.product.findMany({
+        where: { sellerId: userId },
+        select: { id: true },
+      });
+      const sellerProductIds = sellerProducts.map((p) => p.id);
+
+      // Check if any item in the order belongs to this seller
+      isAuthorized = order.items.some((item) => sellerProductIds.includes(item.productId));
+    }
+
+    if (!isAuthorized) {
       return res
         .status(403)
         .json({ error: "Not authorized to view this order" });
@@ -129,7 +160,22 @@ export const handlePatchOrder = async (req, res) => {
       return res.status(404).json({ error: "Order not found" });
     }
 
-    if (order.userId !== userId) {
+    // Check if the user is the buyer
+    let isAuthorized = order.userId === userId;
+
+    // If not the buyer, check if the user is a seller who owns any product in the order
+    if (!isAuthorized && req.user.type === "SELLER") {
+      const sellerProducts = await prisma.product.findMany({
+        where: { sellerId: userId },
+        select: { id: true },
+      });
+      const sellerProductIds = sellerProducts.map((p) => p.id);
+
+      // Check if any item in the order belongs to this seller
+      isAuthorized = order.items.some((item) => sellerProductIds.includes(item.productId));
+    }
+
+    if (!isAuthorized) {
       return res
         .status(403)
         .json({ error: "Not authorized to update this order" });

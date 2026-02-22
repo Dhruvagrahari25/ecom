@@ -9,16 +9,18 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  name      String
-  phone     String    @unique
-  email     String?   @unique
-  type      UserType
-  orders    Order[]
-  products  Product[] @relation("SellerProducts")
-  password  String
-  address   String    @default("Unknown")
-  createdAt DateTime  @default(now())
+  id            String         @id @default(uuid())
+  name          String
+  phone         String         @unique
+  email         String?        @unique
+  type          UserType
+  orders        Order[]
+  products      Product[]      @relation("SellerProducts")
+  cart          Cart?
+  subscriptions Subscription[]
+  password      String
+  address       String         @default("Unknown")
+  createdAt     DateTime       @default(now())
 }
 
 enum UserType {
@@ -56,16 +58,72 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id])
   productId String
   quantity  Int
+  price     Float   @default(0) // Price at the time of order
+  cost      Float   @default(0) // Cost at the time of order
 }
 
 model Product {
-  id          String      @id @default(uuid())
-  name        String
-  description String?
-  price       Float
-  unit        String // e.g., "KG", "PCS"
-  available   Boolean     @default(true)
-  sellerId    String
-  seller      User        @relation("SellerProducts", fields: [sellerId], references: [id])
-  OrderItem   OrderItem[]
+  id                String             @id @default(uuid())
+  name              String
+  description       String?
+  price             Float
+  cost              Float              @default(0)
+  unit              String // e.g., "KG", "PCS"
+  available         Boolean            @default(true)
+  sellerId          String
+  seller            User               @relation("SellerProducts", fields: [sellerId], references: [id])
+  OrderItem         OrderItem[]
+  CartItem          CartItem[]
+  SubscriptionItem  SubscriptionItem[]
+}
+
+model Cart {
+  id        String     @id @default(uuid())
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String     @unique // one cart per user
+  items     CartItem[]
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String  @id @default(uuid())
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cartId    String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  quantity  Int
+
+  @@unique([cartId, productId]) // no duplicate products in the same cart
+}
+
+model Subscription {
+  id         String               @id @default(uuid())
+  user       User                 @relation(fields: [userId], references: [id])
+  userId     String
+  name       String               // user-given label e.g. "Weekly Groceries"
+  items      SubscriptionItem[]
+  active     Boolean              @default(true)
+  frequency  SubscriptionFrequency
+  dayOfWeek  Int?                 // 0=Sun … 6=Sat, only used for WEEKLY
+  hour       Int                  // 0-23 (local server time)
+  minute     Int                  @default(0) // 0-59
+  nextRunAt  DateTime             // pre-computed next trigger time
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+}
+
+enum SubscriptionFrequency {
+  DAILY
+  WEEKLY
+}
+
+model SubscriptionItem {
+  id             String       @id @default(uuid())
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  subscriptionId String
+  product        Product      @relation(fields: [productId], references: [id])
+  productId      String
+  quantity       Int
+
+  @@unique([subscriptionId, productId])
 }

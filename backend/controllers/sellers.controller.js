@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 export const postSellerItems = async (req, res) => {
   try {
-    const { name, description, price, unit } = req.body;
+    const { name, description, price, cost, unit } = req.body;
     const sellerId = req.user.id;
 
     if (!sellerId || !name || !price || !unit) {
@@ -27,6 +27,7 @@ export const postSellerItems = async (req, res) => {
         name,
         description,
         price,
+        cost: cost || 0,
         unit,
         sellerId,
       },
@@ -90,10 +91,17 @@ export const getSellerOrders = async (req, res) => {
         ...(status && { status }),
       },
       include: {
+        user: {
+          select: {
+            name: true,
+            address: true,
+          }
+        },
         items: {
           include: { product: true },
         },
       },
+      orderBy: { placedAt: "desc" },
     });
 
     res.json(orders);
@@ -145,17 +153,184 @@ export const patchSellerOrders = async (req, res) => {
   }
 };
 
+export const getSellerItemById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await prisma.product.findUnique({
+      where: { id },
+    });
+
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    res.json(product);
+  } catch (err) {
+    console.error("Error fetching item:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const patchSellerItems = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, description, price, cost, unit, available } = req.body;
+
+    const product = await prisma.product.findUnique({
+      where: { id },
+    });
+
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    if (product.sellerId !== req.user.id) {
+      return res.status(403).json({ error: "You can only update your own products" });
+    }
+
+    const updatedProduct = await prisma.product.update({
+      where: { id },
+      data: {
+        ...(name && { name }),
+        ...(description !== undefined && { description }),
+        ...(price && { price }),
+        ...(cost !== undefined && { cost }),
+        ...(unit && { unit }),
+        ...(available !== undefined && { available }),
+      },
+    });
+
+    res.json(updatedProduct);
+  } catch (err) {
+    console.error("Error updating item:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 export const getSellerItems = async (req, res) => {
   try {
+    // If the user is a seller, they might want to see only their items.
+    // If they are a buyer, they should see all available items.
+    const userType = req.user.type;
     const sellerId = req.user.id;
 
-    const items = await prisma.product.findMany({
-      where: { sellerId },
-    });
+    let items;
+    if (userType === "SELLER") {
+      items = await prisma.product.findMany({
+        where: { sellerId },
+      });
+    } else {
+      items = await prisma.product.findMany();
+    }
 
     res.json(items);
   } catch (err) {
-    console.error("Error fetching seller items:", err);
+    console.error("Error fetching items:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const getSellerDashboard = async (req, res) => {
+  try {
+    const sellerId = req.user.id;
+
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    // Fetch all orders that contain items from this seller
+    const orders = await prisma.order.findMany({
+      where: {
+        items: {
+          some: {
+            product: {
+              sellerId,
+            },
+          },
+        },
+      },
+      include: {
+        items: {
+          where: {
+            product: {
+              sellerId,
+            },
+          },
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+
+    let totalMonthlyOrders = 0;
+    let totalMonthlyOrderValue = 0;
+    let totalProfitsMade = 0;
+    let totalRevenue = 0;
+    let totalOrderValueAllTime = 0;
+    let totalOrdersAllTime = orders.length;
+
+    const itemStats = {};
+
+    orders.forEach((order) => {
+      const isCurrentMonth = order.placedAt >= startOfMonth;
+      if (isCurrentMonth) {
+        totalMonthlyOrders++;
+      }
+
+      let orderValue = 0;
+      let orderCost = 0;
+
+      order.items.forEach((item) => {
+        // Use historical price/cost if available, otherwise fallback to current product price/cost
+        const price = item.price || item.product.price;
+        const cost = item.cost || item.product.cost || 0;
+        const quantity = item.quantity;
+
+        const itemRevenue = price * quantity;
+        const itemCost = cost * quantity;
+
+        orderValue += itemRevenue;
+        orderCost += itemCost;
+
+        totalRevenue += itemRevenue;
+        totalProfitsMade += (itemRevenue - itemCost);
+
+        if (isCurrentMonth) {
+          totalMonthlyOrderValue += itemRevenue;
+        }
+
+        // Track item popularity
+        if (!itemStats[item.productId]) {
+          itemStats[item.productId] = {
+            id: item.productId,
+            name: item.product.name,
+            quantity: 0,
+          };
+        }
+        itemStats[item.productId].quantity += quantity;
+      });
+
+      totalOrderValueAllTime += orderValue;
+    });
+
+    const avgProfitPercentage = totalRevenue > 0 ? (totalProfitsMade / totalRevenue) * 100 : 0;
+    const avgOrderValue = totalOrdersAllTime > 0 ? totalOrderValueAllTime / totalOrdersAllTime : 0;
+
+    const sortedItems = Object.values(itemStats).sort((a, b) => b.quantity - a.quantity);
+    const mostOrderedItem = sortedItems.length > 0 ? sortedItems[0] : null;
+    const leastOrderedItem = sortedItems.length > 0 ? sortedItems[sortedItems.length - 1] : null;
+
+    res.json({
+      totalMonthlyOrders,
+      totalMonthlyOrderValue,
+      totalProfitsMade,
+      avgProfitPercentage,
+      avgOrderValue,
+      mostOrderedItem,
+      leastOrderedItem,
+    });
+  } catch (err) {
+    console.error("Error fetching dashboard data:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

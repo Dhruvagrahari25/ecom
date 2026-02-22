@@ -151,11 +151,12 @@ export const handleLogin = async (req, res) => {
       res.cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
+        path: "/",
       });
 
-      return res.json({ message: "Login successful (password)", user });
+      return res.json({ message: "Login successful (password)", user, token });
     }
 
     // OTP login flow (you can later add token here after verify)
