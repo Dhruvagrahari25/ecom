@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/api";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -7,13 +7,7 @@ const Products = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const token = localStorage.getItem("token");
-
-        const res = await axios.get("http://localhost:3000/sellers/items", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await api.get("/sellers/items");
 
         // Sort products alphabetically by name
         const sortedProducts = res.data.sort((a, b) =>

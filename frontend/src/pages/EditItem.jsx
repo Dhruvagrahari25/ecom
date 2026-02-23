@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/api";
 import { useParams, useNavigate } from "react-router-dom";
 
 const EditItem = () => {
@@ -16,9 +16,7 @@ const EditItem = () => {
   // Fetch existing item details
   const fetchItem = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/sellers/items/${id}`, {
-        withCredentials: true,
-      });
+      const res = await api.get(`/sellers/items/${id}`);
       setItem({
         name: res.data.name,
         price: res.data.price,
@@ -39,16 +37,15 @@ const EditItem = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.patch(
-        `http://localhost:3000/sellers/items/${id}`,
+      await api.patch(
+        `/sellers/items/${id}`,
         {
           name: item.name,
           price: Number(item.price),
           cost: Number(item.cost),
           unit: item.unit,
           description: item.description,
-        },
-        { withCredentials: true }
+        }
       );
       navigate("/seller/items"); // go back to items list
     } catch (err) {

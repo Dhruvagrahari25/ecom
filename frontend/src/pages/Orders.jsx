@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/api";
 import { useNavigate } from "react-router-dom";
 
 export default function Orders() {
@@ -9,7 +9,6 @@ export default function Orders() {
   const [toDate, setToDate] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [paymentFilter, setPaymentFilter] = useState("");
-  const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
   const filtered = orders.filter((order) => {
@@ -27,9 +26,7 @@ export default function Orders() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/orders`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await api.get("/orders");
         setOrders(res.data);
       } catch (err) {
         console.error("Error fetching orders:", err);
@@ -38,7 +35,7 @@ export default function Orders() {
       }
     };
     fetchOrders();
-  }, [token]);
+  }, []);
 
   if (loading) return <div className="p-8 text-center">Loading orders...</div>;
 

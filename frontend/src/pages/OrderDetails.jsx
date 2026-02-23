@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/api";
 
 const OrderDetails = () => {
   const { orderId } = useParams();
@@ -11,12 +11,7 @@ const OrderDetails = () => {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/orders/${orderId}`, {
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const res = await api.get(`/orders/${orderId}`);
         setOrder(res.data);
       } catch (err) {
         console.error(err);

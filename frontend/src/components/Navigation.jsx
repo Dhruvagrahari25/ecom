@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/api";
 import Sidebar from "./Sidebar";
 import { useCart } from "../context/CartContext";
 
@@ -17,9 +17,7 @@ export default function Navigation() {
                 return;
             }
             try {
-                const res = await axios.get(`${import.meta.env.VITE_API_URL}/users/profile`, {
-                    headers: { Authorization: `Bearer ${currentToken}` },
-                });
+                const res = await api.get("/users/profile");
                 setUser(res.data);
             } catch (err) {
                 console.error("Error fetching profile:", err);

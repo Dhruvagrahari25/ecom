@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../utils/api";
 import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -9,7 +9,7 @@ export default function Signup() {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/signup`, form, { withCredentials: true });
+    const res = await api.post("/auth/signup", form);
     localStorage.setItem("token", res.data.token);
     toast.success("Signup successful");
     navigate(form.type === "SELLER" ? "/seller/dashboard" : "/items");

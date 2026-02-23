@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/api";
 import { useNavigate } from "react-router-dom";
 
 const SellerOrders = () => {
@@ -37,10 +37,7 @@ const SellerOrders = () => {
   // Fetch all orders
   const fetchOrders = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:3000/sellers/orders",
-        { withCredentials: true }
-      );
+      const res = await api.get("/sellers/orders");
       setOrders(res.data);
     } catch (err) {
       console.error("Error fetching orders:", err);
@@ -52,11 +49,7 @@ const SellerOrders = () => {
   // Update order status
   const updateStatus = async (id, newStatus) => {
     try {
-      await axios.patch(
-        `http://localhost:3000/sellers/orders/${id}`,
-        { status: newStatus },
-        { withCredentials: true }
-      );
+      await api.patch(`/sellers/orders/${id}`, { status: newStatus });
       fetchOrders();
     } catch (err) {
       console.error("Error updating order:", err);

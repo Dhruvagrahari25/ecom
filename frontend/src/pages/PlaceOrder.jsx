@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/api";
 import { useParams, useNavigate } from "react-router-dom";
 
 const PlaceOrder = () => {
@@ -11,9 +11,7 @@ const PlaceOrder = () => {
   // Fetch product details
   const fetchItem = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/sellers/items/${id}`, {
-        withCredentials: true,
-      });
+      const res = await api.get(`/sellers/items/${id}`);
       setItem(res.data);
     } catch (err) {
       console.error("Error fetching item:", err);
@@ -28,11 +26,7 @@ const PlaceOrder = () => {
   const handleOrder = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(
-        "http://localhost:3000/orders",
-        { itemId: id, quantity: Number(quantity) },
-        { withCredentials: true }
-      );
+      await api.post("/orders", { itemId: id, quantity: Number(quantity) });
       navigate("/orders"); // go to user orders page
     } catch (err) {
       console.error("Error placing order:", err);

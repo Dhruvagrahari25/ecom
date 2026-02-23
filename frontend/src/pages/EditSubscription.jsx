@@ -1,17 +1,9 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/api";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-const api = (path, opts = {}) =>
-    axios({
-        url: `${import.meta.env.VITE_API_URL}${path}`,
-        withCredentials: true,
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        ...opts,
-    });
 
 const DEFAULT_FORM = {
     name: "",
@@ -37,7 +29,7 @@ const EditSubscription = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await api("/sellers/items");
+                const res = await api.get("/sellers/items");
                 const sorted = res.data
                     .filter((p) => p.available)
                     .sort((a, b) => a.name.localeCompare(b.name));
@@ -52,7 +44,7 @@ const EditSubscription = () => {
         if (!isNew) {
             const fetchSub = async () => {
                 try {
-                    const res = await api(`/subscriptions/${id}`);
+                    const res = await api.get(`/subscriptions/${id}`);
                     const sub = res.data;
                     setForm({
                         name: sub.name,
@@ -113,9 +105,9 @@ const EditSubscription = () => {
 
         try {
             if (isNew) {
-                await api("/subscriptions", { method: "POST", data: payload });
+                await api.post("/subscriptions", payload);
             } else {
-                await api(`/subscriptions/${id}`, { method: "PATCH", data: payload });
+                await api.patch(`/subscriptions/${id}`, payload);
             }
             navigate("/subscriptions");
         } catch (err) {

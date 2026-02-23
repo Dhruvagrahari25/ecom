@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/api";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -10,9 +10,7 @@ const SellerItems = () => {
   // Fetch all seller items
   const fetchItems = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/sellers/items", {
-        withCredentials: true,
-      });
+      const res = await api.get("/sellers/items");
       // Sort items alphabetically by name
       const sortedItems = res.data.sort((a, b) =>
         a.name.localeCompare(b.name)
@@ -26,9 +24,7 @@ const SellerItems = () => {
   // Delete an item
   const deleteItem = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/sellers/items/${id}`, {
-        withCredentials: true,
-      });
+      await api.delete(`/sellers/items/${id}`);
       toast.success("Item deleted successfully");
       fetchItems(); // refresh list
     } catch (err) {

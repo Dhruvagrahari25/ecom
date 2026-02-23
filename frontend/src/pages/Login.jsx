@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../utils/api";
 import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -10,7 +10,7 @@ export default function Login() {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { phone, password }, { withCredentials: true });
+        const res = await api.post("/auth/login", { phone, password });
         console.log(res.data);
         localStorage.setItem("token", res.data.token);
         toast.success("Login successful");

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../utils/api";
 import { useNavigate } from "react-router-dom";
 
 const AddItem = () => {
@@ -13,10 +13,9 @@ const AddItem = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(
-        "http://localhost:3000/sellers/items",
-        { name, price: Number(price), cost: Number(cost), unit, description },
-        { withCredentials: true }
+      await api.post(
+        "/sellers/items",
+        { name, price: Number(price), cost: Number(cost), unit, description }
       );
       navigate("/seller/items"); // go back to items list
     } catch (err) {

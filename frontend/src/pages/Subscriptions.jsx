@@ -1,16 +1,8 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/api";
 import { useNavigate } from "react-router-dom";
 
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-const api = (path, opts = {}) =>
-    axios({
-        url: `${import.meta.env.VITE_API_URL}${path}`,
-        withCredentials: true,
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        ...opts,
-    });
 
 const Subscriptions = () => {
     const [subs, setSubs] = useState([]);
@@ -19,7 +11,7 @@ const Subscriptions = () => {
 
     const fetchSubs = async () => {
         try {
-            const res = await api("/subscriptions");
+            const res = await api.get("/subscriptions");
             setSubs(res.data);
         } catch (err) {
             console.error("Error fetching subscriptions:", err);
@@ -30,10 +22,7 @@ const Subscriptions = () => {
 
     const toggleActive = async (sub) => {
         try {
-            const res = await api(`/subscriptions/${sub.id}`, {
-                method: "PATCH",
-                data: { active: !sub.active },
-            });
+            const res = await api.patch(`/subscriptions/${sub.id}`, { active: !sub.active });
             setSubs((prev) => prev.map((s) => (s.id === sub.id ? res.data : s)));
         } catch (err) {
             console.error("Error toggling subscription:", err);
@@ -43,7 +32,7 @@ const Subscriptions = () => {
     const deleteSub = async (id) => {
         if (!confirm("Delete this subscription?")) return;
         try {
-            await api(`/subscriptions/${id}`, { method: "DELETE" });
+            await api.delete(`/subscriptions/${id}`);
             setSubs((prev) => prev.filter((s) => s.id !== id));
         } catch (err) {
             console.error("Error deleting subscription:", err);
@@ -103,8 +92,8 @@ const Subscriptions = () => {
                                                 <h3 className="font-semibold text-gray-800 truncate">{sub.name}</h3>
                                                 <span
                                                     className={`text-xs font-medium px-2 py-0.5 rounded-full ${sub.active
-                                                            ? "bg-green-50 text-green-700"
-                                                            : "bg-gray-100 text-gray-400"
+                                                        ? "bg-green-50 text-green-700"
+                                                        : "bg-gray-100 text-gray-400"
                                                         }`}
                                                 >
                                                     {sub.active ? "Active" : "Paused"}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/api";
 
 export default function Profile() {
   const [user, setUser] = useState({
@@ -18,14 +18,10 @@ export default function Profile() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  const token = localStorage.getItem("token");
-
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/users/profile`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await api.get("/users/profile");
         setUser(res.data);
       } catch (err) {
         console.error("Error fetching profile", err);
@@ -34,7 +30,7 @@ export default function Profile() {
       }
     };
     fetchProfile();
-  }, [token]);
+  }, []);
 
   const handleSave = async () => {
     try {
@@ -52,11 +48,7 @@ export default function Profile() {
         payload.newPassword = newPassword;
       }
 
-      await axios.put(
-        `${import.meta.env.VITE_API_URL}/users/profile`,
-        payload,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.put("/users/profile", payload);
       setMessage("Profile updated successfully!");
       setCurrentPassword("");
       setNewPassword("");

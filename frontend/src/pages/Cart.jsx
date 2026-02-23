@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/api";
 import toast from "react-hot-toast";
 import { useCart } from "../context/CartContext";
 
@@ -18,14 +18,10 @@ const Cart = () => {
     const handlePlaceOrder = async () => {
         if (cart.length === 0) return;
         try {
-            await axios.post(
-                `${import.meta.env.VITE_API_URL}/orders`,
+            await api.post(
+                "/orders",
                 {
                     items: cart.map((i) => ({ productId: i.id, quantity: i.quantity })),
-                },
-                {
-                    withCredentials: true,
-                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
                 }
             );
             clearCart();
@@ -40,18 +36,14 @@ const Cart = () => {
         e.preventDefault();
         setSavingSub(true);
         try {
-            await axios.post(
-                `${import.meta.env.VITE_API_URL}/subscriptions`,
+            await api.post(
+                "/subscriptions",
                 {
                     ...subForm,
                     hour: Number(subForm.hour),
                     minute: Number(subForm.minute),
                     dayOfWeek: subForm.frequency === "WEEKLY" ? Number(subForm.dayOfWeek) : undefined,
                     items: cart.map((i) => ({ productId: i.id, quantity: i.quantity })),
-                },
-                {
-                    withCredentials: true,
-                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
                 }
             );
             setShowSubModal(false);

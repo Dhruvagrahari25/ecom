@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/api";
 
 const SellerDashboard = () => {
     const [dashboardData, setDashboardData] = useState(null);
@@ -9,9 +9,7 @@ const SellerDashboard = () => {
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                const res = await axios.get("http://localhost:3000/sellers/dashboard", {
-                    withCredentials: true,
-                });
+                const res = await api.get("/sellers/dashboard");
                 setDashboardData(res.data);
                 setLoading(false);
             } catch (err) {
