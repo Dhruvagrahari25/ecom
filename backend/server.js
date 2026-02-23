@@ -57,11 +57,15 @@ app.use("/orders", orderRoutes);
 app.use("/sellers", sellerRoutes);
 app.use("/subscriptions", subscriptionRoutes);
 
-// Cron job: check subscriptions every minute
-cron.schedule("* * * * *", () => {
-  runSubscriptionCron();
-});
+// Cron job: only run in non-serverless environments
+if (process.env.VERCEL !== "1") {
+  cron.schedule("* * * * *", () => {
+    runSubscriptionCron();
+  });
 
-app.listen(PORT, () => {
-  console.log(`Server running on PORT ${PORT}`);
-});
+  app.listen(PORT, () => {
+    console.log(`Server running on PORT ${PORT}`);
+  });
+}
+
+export default app;
