@@ -58,6 +58,26 @@ export const deleteSellerItems = async (req, res) => {
       return res.status(403).json({ error: "You can only delete your own products" });
     }
 
+    // Check if product is in any orders
+    const orderCount = await prisma.orderItem.count({
+      where: { productId: itemId },
+    });
+
+    if (orderCount > 0) {
+      return res.status(400).json({
+        error: "Cannot delete product because it has been ordered. Please mark it as unavailable instead."
+      });
+    }
+
+    // Delete related cart items and subscription items first
+    await prisma.cartItem.deleteMany({
+      where: { productId: itemId },
+    });
+
+    await prisma.subscriptionItem.deleteMany({
+      where: { productId: itemId },
+    });
+
     // Proceed with deletion if authorized
     await prisma.product.delete({
       where: { id: itemId },

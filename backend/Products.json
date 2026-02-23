@@ -1,0 +1,250 @@
+[
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Broccoli",
+    "description": "Fresh broccoli",
+    "price": 120,
+    "cost": 90,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Red Capsicum",
+    "description": "Fresh red capsicum",
+    "price": 160,
+    "cost": 130,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Yellow Capsicum",
+    "description": "Fresh yellow capsicum",
+    "price": 170,
+    "cost": 140,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Yellow Zucchini",
+    "description": "Fresh yellow zucchini",
+    "price": 180,
+    "cost": 150,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Green Zucchini",
+    "description": "Fresh green zucchini",
+    "price": 160,
+    "cost": 130,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Baby Corn",
+    "description": "Fresh baby corn",
+    "price": 140,
+    "cost": 110,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Iceberg Lettuce",
+    "description": "Fresh iceberg lettuce",
+    "price": 90,
+    "cost": 70,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "American Sweet Corn",
+    "description": "Fresh American sweet corn",
+    "price": 100,
+    "cost": 75,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Parsley",
+    "description": "Fresh parsley leaves",
+    "price": 40,
+    "cost": 25,
+    "unit": "BUNCH"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Basil",
+    "description": "Fresh basil leaves",
+    "price": 50,
+    "cost": 30,
+    "unit": "BUNCH"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Red Cabbage",
+    "description": "Fresh red cabbage",
+    "price": 80,
+    "cost": 60,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Cherry Tomatoes",
+    "description": "Fresh cherry tomatoes",
+    "price": 120,
+    "cost": 95,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Celery",
+    "description": "Fresh celery sticks",
+    "price": 90,
+    "cost": 70,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Fresh Mushroom",
+    "description": "Fresh mushrooms",
+    "price": 200,
+    "cost": 170,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Thai",
+    "description": "Thai herb",
+    "price": 60,
+    "cost": 40,
+    "unit": "BUNCH"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Rosemary",
+    "description": "Fresh rosemary leaves",
+    "price": 60,
+    "cost": 40,
+    "unit": "BUNCH"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Oregano",
+    "description": "Fresh oregano leaves",
+    "price": 60,
+    "cost": 40,
+    "unit": "BUNCH"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Leeks",
+    "description": "Fresh leeks",
+    "price": 110,
+    "cost": 85,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Lolo Rosso Lettuce",
+    "description": "Fresh Lolo Rosso lettuce",
+    "price": 100,
+    "cost": 75,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Lemon Leaves",
+    "description": "Fresh lemon leaves",
+    "price": 40,
+    "cost": 25,
+    "unit": "BUNCH"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Lemon Grass",
+    "description": "Fresh lemongrass",
+    "price": 50,
+    "cost": 30,
+    "unit": "BUNCH"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Peeled Garlic",
+    "description": "Fresh peeled garlic",
+    "price": 180,
+    "cost": 150,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Raw Mango",
+    "description": "Fresh raw mango",
+    "price": 100,
+    "cost": 75,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Asparagus",
+    "description": "Fresh asparagus",
+    "price": 300,
+    "cost": 250,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Baby Potato",
+    "description": "Fresh baby potatoes",
+    "price": 70,
+    "cost": 50,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Beans Sprouts",
+    "description": "Fresh beans sprouts",
+    "price": 90,
+    "cost": 65,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Red Lettuce",
+    "description": "Fresh red lettuce",
+    "price": 90,
+    "cost": 70,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Thai Ginger",
+    "description": "Fresh Thai ginger",
+    "price": 150,
+    "cost": 120,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Chinese Pakchoy",
+    "description": "Fresh Chinese pakchoy",
+    "price": 90,
+    "cost": 70,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Chinese Cabbage",
+    "description": "Fresh Chinese cabbage",
+    "price": 80,
+    "cost": 60,
+    "unit": "KG"
+  },
+  {
+    "sellerId": "ef998ee3-773a-4295-8e9c-83939149b615",
+    "name": "Green Lettuce",
+    "description": "Fresh green lettuce",
+    "price": 80,
+    "cost": 60,
+    "unit": "KG"
+  }
+]

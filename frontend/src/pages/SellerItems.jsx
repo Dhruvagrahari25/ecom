@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const SellerItems = () => {
   const [items, setItems] = useState([]);
@@ -28,9 +29,15 @@ const SellerItems = () => {
       await axios.delete(`http://localhost:3000/sellers/items/${id}`, {
         withCredentials: true,
       });
+      toast.success("Item deleted successfully");
       fetchItems(); // refresh list
     } catch (err) {
       console.error("Error deleting item:", err);
+      if (err.response && err.response.data && err.response.data.error) {
+        toast.error(err.response.data.error);
+      } else {
+        toast.error("Failed to delete item");
+      }
     }
   };
 
