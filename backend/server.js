@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173", // your React dev server
+    origin: process.env.FRONTEND_URL || "http://localhost:5173", // your React dev server
     credentials: true, // allow cookies to be sent
   })
 );
@@ -50,5 +50,5 @@ cron.schedule("* * * * *", () => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on PORT http://localhost:${PORT}`);
+  console.log(`Server running on PORT ${PORT}`);
 });
