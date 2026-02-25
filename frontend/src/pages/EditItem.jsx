@@ -11,6 +11,7 @@ const EditItem = () => {
     cost: "",
     unit: "",
     description: "",
+    imageUrl: "",
   });
 
   // Fetch existing item details
@@ -23,6 +24,7 @@ const EditItem = () => {
         cost: res.data.cost || 0,
         unit: res.data.unit,
         description: res.data.description || "",
+        imageUrl: res.data.imageUrl || "",
       });
     } catch (err) {
       console.error("Error fetching item:", err);
@@ -45,6 +47,7 @@ const EditItem = () => {
           cost: Number(item.cost),
           unit: item.unit,
           description: item.description,
+          imageUrl: item.imageUrl || "https://placehold.co/400",
         }
       );
       navigate("/seller/items"); // go back to items list
@@ -109,6 +112,25 @@ const EditItem = () => {
             value={item.description}
             onChange={(e) => setItem({ ...item, description: e.target.value })}
           />
+        </div>
+
+        <div>
+          <label className="block mb-1">Image URL:</label>
+          <input
+            type="url"
+            className="w-full border p-2 rounded"
+            placeholder="https://placehold.co/400"
+            value={item.imageUrl}
+            onChange={(e) => setItem({ ...item, imageUrl: e.target.value })}
+          />
+          {item.imageUrl && (
+            <img
+              src={item.imageUrl}
+              alt="Preview"
+              className="mt-2 h-32 w-full object-cover rounded border"
+              onError={(e) => { e.target.src = "https://placehold.co/400"; }}
+            />
+          )}
         </div>
 
         <button

@@ -57,7 +57,7 @@ model OrderItem {
   orderId   String
   product   Product @relation(fields: [productId], references: [id])
   productId String
-  quantity  Int
+  quantity  Float
   price     Float   @default(0) // Price at the time of order
   cost      Float   @default(0) // Cost at the time of order
 }
@@ -70,6 +70,7 @@ model Product {
   cost              Float              @default(0)
   unit              String // e.g., "KG", "PCS"
   available         Boolean            @default(true)
+  imageUrl          String             @default("https://placehold.co/400")
   sellerId          String
   seller            User               @relation("SellerProducts", fields: [sellerId], references: [id])
   OrderItem         OrderItem[]
@@ -91,7 +92,7 @@ model CartItem {
   cartId    String
   product   Product @relation(fields: [productId], references: [id])
   productId String
-  quantity  Int
+  quantity  Float
 
   @@unique([cartId, productId]) // no duplicate products in the same cart
 }
@@ -123,7 +124,7 @@ model SubscriptionItem {
   subscriptionId String
   product        Product      @relation(fields: [productId], references: [id])
   productId      String
-  quantity       Int
+  quantity       Float
 
   @@unique([subscriptionId, productId])
 }

@@ -1,13 +1,15 @@
 import { Link } from "react-router-dom";
+import logo from "../assets/images/logo.png";
 
 export default function Navbar({ user, navLinks, handleLogout }) {
   return (
     <nav className="bg-green-700 text-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <Link to={user ? (user.type === "SELLER" ? "/seller/items" : "/items") : "/"} className="text-xl font-bold">
-              E-Com
+          <div className="flex items-center gap-2">
+            <Link to={user ? (user.type === "SELLER" ? "/seller/items" : "/items") : "/"} className="flex items-center gap-2 text-xl font-bold">
+              <img src={logo} alt="SMA Traders" className="h-9 w-9 object-cover" />
+              SMA Traders
             </Link>
           </div>
 

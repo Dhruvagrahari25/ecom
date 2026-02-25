@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 export const postSellerItems = async (req, res) => {
   try {
-    const { name, description, price, cost, unit } = req.body;
+    const { name, description, price, cost, unit, imageUrl } = req.body;
     const sellerId = req.user.id;
 
     if (!sellerId || !name || !price || !unit) {
@@ -30,6 +30,7 @@ export const postSellerItems = async (req, res) => {
         cost: cost || 0,
         unit,
         sellerId,
+        imageUrl: imageUrl || "https://placehold.co/400",
       },
     });
 
@@ -194,7 +195,7 @@ export const getSellerItemById = async (req, res) => {
 export const patchSellerItems = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, price, cost, unit, available } = req.body;
+    const { name, description, price, cost, unit, available, imageUrl } = req.body;
 
     const product = await prisma.product.findUnique({
       where: { id },
@@ -217,6 +218,7 @@ export const patchSellerItems = async (req, res) => {
         ...(cost !== undefined && { cost }),
         ...(unit && { unit }),
         ...(available !== undefined && { available }),
+        ...(imageUrl !== undefined && { imageUrl }),
       },
     });
 

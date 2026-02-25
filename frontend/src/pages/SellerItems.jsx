@@ -46,7 +46,7 @@ const SellerItems = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">My Items</h1>
         <button
-          className="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-700 transition-colors"
+          className="px-4 py-2 bg-green-700 text-white text-sm rounded-lg hover:bg-green-800 transition-colors"
           onClick={() => navigate("/seller/items/new")}
         >
           + Add Item
@@ -57,35 +57,43 @@ const SellerItems = () => {
         {items.map((item) => (
           <div
             key={item.id}
-            className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition-shadow"
+            className="bg-white rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow overflow-hidden"
           >
-            <div>
-              <h2 className="text-base font-semibold text-gray-800 mb-1">{item.name}</h2>
-              {item.description && (
-                <p className="text-sm text-gray-500 mb-3 line-clamp-2">{item.description}</p>
-              )}
-              <p className="text-lg font-bold text-gray-900">₹{item.price}
-                <span className="text-xs font-normal text-gray-400 ml-1">/ {item.unit}</span>
-              </p>
-              <p className="text-sm text-gray-500 mt-1">Cost: ₹{item.cost || 0}</p>
-              <span className={`inline-block mt-2 text-xs font-medium px-2 py-0.5 rounded-full ${item.available ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-400'
-                }`}>
-                {item.available ? 'Available' : 'Unavailable'}
-              </span>
-            </div>
-            <div className="flex gap-2 mt-4">
-              <button
-                className="flex-1 py-1.5 text-sm font-medium border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-                onClick={() => navigate(`/seller/items/${item.id}/edit`)}
-              >
-                Edit
-              </button>
-              <button
-                className="flex-1 py-1.5 text-sm font-medium border border-red-100 rounded-lg text-red-500 hover:bg-red-50 transition-colors"
-                onClick={() => deleteItem(item.id)}
-              >
-                Delete
-              </button>
+            <img
+              src={item.imageUrl || "https://placehold.co/400"}
+              alt={item.name}
+              className="w-full h-40 object-cover"
+              onError={(e) => { e.target.src = "https://placehold.co/400"; }}
+            />
+            <div className="p-5 flex flex-col flex-1 justify-between">
+              <div>
+                <h2 className="text-base font-semibold text-gray-800 mb-1">{item.name}</h2>
+                {item.description && (
+                  <p className="text-sm text-gray-500 mb-3 line-clamp-2">{item.description}</p>
+                )}
+                <p className="text-lg font-bold text-gray-900">₹{item.price}
+                  <span className="text-xs font-normal text-gray-400 ml-1">/ {item.unit}</span>
+                </p>
+                <p className="text-sm text-gray-500 mt-1">Cost: ₹{item.cost || 0}</p>
+                <span className={`inline-block mt-2 text-xs font-medium px-2 py-0.5 rounded-full ${item.available ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-400'
+                  }`}>
+                  {item.available ? 'Available' : 'Unavailable'}
+                </span>
+              </div>
+              <div className="flex gap-2 mt-4">
+                <button
+                  className="flex-1 py-1.5 text-sm font-medium border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                  onClick={() => navigate(`/seller/items/${item.id}/edit`)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="flex-1 py-1.5 text-sm font-medium border border-red-100 rounded-lg text-red-500 hover:bg-red-50 transition-colors"
+                  onClick={() => deleteItem(item.id)}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         ))}

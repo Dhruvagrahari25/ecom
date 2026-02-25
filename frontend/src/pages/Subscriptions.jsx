@@ -58,7 +58,7 @@ const Subscriptions = () => {
                     <h1 className="text-2xl font-semibold text-gray-800">Subscriptions</h1>
                     <button
                         onClick={() => navigate("/subscriptions/new")}
-                        className="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-700 transition-colors"
+                        className="px-4 py-2 bg-green-700 text-white text-sm rounded-lg hover:bg-green-800 transition-colors"
                     >
                         + New Subscription
                     </button>
@@ -133,7 +133,7 @@ const Subscriptions = () => {
                                             {/* Toggle */}
                                             <button
                                                 onClick={() => toggleActive(sub)}
-                                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${sub.active ? "bg-gray-900" : "bg-gray-200"
+                                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${sub.active ? "bg-green-700" : "bg-gray-200"
                                                     }`}
                                                 title={sub.active ? "Pause subscription" : "Resume subscription"}
                                             >

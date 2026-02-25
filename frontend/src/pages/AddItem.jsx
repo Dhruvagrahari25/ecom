@@ -8,6 +8,7 @@ const AddItem = () => {
   const [cost, setCost] = useState("");
   const [unit, setUnit] = useState("");
   const [description, setDescription] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -15,7 +16,7 @@ const AddItem = () => {
     try {
       await api.post(
         "/sellers/items",
-        { name, price: Number(price), cost: Number(cost), unit, description }
+        { name, price: Number(price), cost: Number(cost), unit, description, imageUrl: imageUrl || "https://placehold.co/400" }
       );
       navigate("/seller/items"); // go back to items list
     } catch (err) {
@@ -79,6 +80,25 @@ const AddItem = () => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
+        </div>
+
+        <div>
+          <label className="block mb-1">Image URL:</label>
+          <input
+            type="url"
+            className="w-full border p-2 rounded"
+            placeholder="https://placehold.co/400"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+          />
+          {imageUrl && (
+            <img
+              src={imageUrl}
+              alt="Preview"
+              className="mt-2 h-32 w-full object-cover rounded border"
+              onError={(e) => { e.target.src = "https://placehold.co/400"; }}
+            />
+          )}
         </div>
 
         <button

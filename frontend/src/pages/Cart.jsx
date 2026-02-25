@@ -9,6 +9,16 @@ const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Frid
 const Cart = () => {
     const { cart, removeFromCart, updateQuantity, clearCart, cartTotal } = useCart();
     const navigate = useNavigate();
+    const [drafts, setDrafts] = useState({});
+
+    const getDraft = (id) => drafts[id] ?? "";
+
+    const commitDraft = (id) => {
+        const val = parseFloat(drafts[id]);
+        if (!isNaN(val) && val > 0) updateQuantity(id, val);
+        else if (!isNaN(val) && val <= 0) removeFromCart(id);
+        setDrafts((prev) => { const next = { ...prev }; delete next[id]; return next; });
+    };
 
     // Subscription modal state
     const [showSubModal, setShowSubModal] = useState(false);
@@ -62,7 +72,7 @@ const Cart = () => {
                 <p className="text-gray-400 text-lg">Your cart is empty.</p>
                 <button
                     onClick={() => navigate("/items")}
-                    className="px-5 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-700 transition-colors"
+                    className="px-5 py-2 bg-green-700 text-white text-sm rounded-lg hover:bg-green-800 transition-colors"
                 >
                     Browse Products
                 </button>
@@ -93,16 +103,23 @@ const Cart = () => {
                             {/* Quantity Controls */}
                             <div className="flex items-center gap-2">
                                 <button
-                                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                    onClick={() => updateQuantity(item.id, Math.max(0, parseFloat((item.quantity - 1).toFixed(2))))}
                                     className="w-7 h-7 flex items-center justify-center rounded-md border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors text-lg leading-none"
                                 >
                                     −
                                 </button>
-                                <span className="w-8 text-center text-sm font-medium text-gray-800">
-                                    {item.quantity}
-                                </span>
+                                <input
+                                    type="number"
+                                    min="0.25"
+                                    step="0.25"
+                                    value={item.id in drafts ? getDraft(item.id) : item.quantity}
+                                    onChange={(e) => setDrafts((prev) => ({ ...prev, [item.id]: e.target.value }))}
+                                    onBlur={() => commitDraft(item.id)}
+                                    onKeyDown={(e) => e.key === "Enter" && commitDraft(item.id)}
+                                    className="w-14 text-center text-sm font-medium text-gray-800 border-none outline-none bg-transparent [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                                />
                                 <button
-                                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                    onClick={() => updateQuantity(item.id, parseFloat((item.quantity + 1).toFixed(2)))}
                                     className="w-7 h-7 flex items-center justify-center rounded-md border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors text-lg leading-none"
                                 >
                                     +
@@ -148,7 +165,7 @@ const Cart = () => {
                     </button>
                     <button
                         onClick={handlePlaceOrder}
-                        className="flex-1 py-2.5 text-sm font-medium bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                        className="flex-1 py-2.5 text-sm font-medium bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors"
                     >
                         Place Order
                     </button>
@@ -236,7 +253,7 @@ const Cart = () => {
                                 <button
                                     type="submit"
                                     disabled={savingSub}
-                                    className="flex-1 py-2.5 text-sm font-medium bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50"
+                                    className="flex-1 py-2.5 text-sm font-medium bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors disabled:opacity-50"
                                 >
                                     {savingSub ? "Saving…" : "Create"}
                                 </button>
